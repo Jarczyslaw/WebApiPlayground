@@ -1,4 +1,5 @@
 using WebApiPlayground.Entities;
+using WebApiPlayground.Models.Dtos;
 using WebApiPlayground.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ app.Run();
 
 static void RegisterServices(IServiceCollection services)
 {
+    services.AddAutoMapper(typeof(RestaurantDto).Assembly);
+
     services.AddSingleton<IWeatherForecastService, WeatherForecastService>();
     //services.AddScoped<IWeatherForecastService, WeatherForecastService>(); - one service instance per request
     //services.AddTransient<IWeatherForecastService, WeatherForecastService>(); - one instance per every injection
