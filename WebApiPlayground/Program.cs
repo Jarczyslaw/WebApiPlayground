@@ -32,6 +32,7 @@ static void RegisterServices(IServiceCollection services)
     //services.AddScoped<IWeatherForecastService, WeatherForecastService>(); - one service instance per request
     //services.AddTransient<IWeatherForecastService, WeatherForecastService>(); - one instance per every injection
 
+    services.AddScoped<IRestaurantService, RestaurantService>();
     services.AddDbContext<RestaurantDbContext>();
     services.AddScoped<RestaurantsSeeder>();
 }
