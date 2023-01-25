@@ -7,25 +7,26 @@ using WebApiPlayground.Services;
 namespace WebApiPlayground.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class RestaurantController : ControllerBase
     {
+        private readonly ILogger<RestaurantController> _logger;
         private readonly IMapper _mapper;
         private readonly IRestaurantService _service;
 
-        public RestaurantController(IRestaurantService service, IMapper mapper)
+        public RestaurantController(
+            IRestaurantService service,
+            IMapper mapper,
+            ILogger<RestaurantController> logger)
         {
             _service = service;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
         public ActionResult Create([FromBody] CreateRestaurantDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return new BadRequestObjectResult(ModelState);
-            }
-
             var restaurant = _mapper.Map<Restaurant>(dto);
 
             _service.AddRestaurant(restaurant);
@@ -36,10 +37,10 @@ namespace WebApiPlayground.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var isDeleted = _service.Delete(id);
-            if (isDeleted) { return NoContent(); }
+            _service.Delete(id);
+            _logger.LogInformation($"Restaurant {id} deleted");
 
-            return NotFound();
+            return NoContent();
         }
 
         [HttpGet]
@@ -56,28 +57,31 @@ namespace WebApiPlayground.Controllers
         public ActionResult<RestaurantDto> GetById(int id)
         {
             var restaurant = _service.GetById(id);
-
-            if (restaurant == null) { return new NotFoundResult(); }
-
             var result = _mapper.Map<RestaurantDto>(restaurant);
 
             return new OkObjectResult(result);
         }
 
+        [HttpGet("error")]
+        public ActionResult GetError()
+        {
+            throw new Exception("Exception from server");
+        }
+
+        [HttpGet("long")]
+        public async Task<ActionResult> LongAction()
+        {
+            await Task.Delay(2000);
+            return new OkResult();
+        }
+
         [HttpPut("{id}")]
         public ActionResult Update(int id, [FromBody] UpdateRestaurantDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return new BadRequestObjectResult(ModelState);
-            }
-
             var restaurant = _mapper.Map<Restaurant>(dto);
 
-            var isUpdated = _service.Update(id, restaurant);
-            if (isUpdated) { return NoContent(); }
-
-            return NotFound();
+            _service.Update(id, restaurant);
+            return NoContent();
         }
     }
 }

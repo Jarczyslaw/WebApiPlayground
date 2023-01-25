@@ -1,4 +1,6 @@
+using NLog.Web;
 using WebApiPlayground.Entities;
+using WebApiPlayground.Middleware;
 using WebApiPlayground.Models.Dtos;
 using WebApiPlayground.Services;
 
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.WebHost.UseNLog();
 
 RegisterServices(builder.Services);
 
@@ -15,10 +18,21 @@ var app = builder.Build();
 SeedDatabase(app);
 
 // Configure the HTTP request pipeline.
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
+app.UseMiddleware<ErrorHandlingMiddleware>()
+    .UseMiddleware<ExecutionTimeMiddleware>();
 
 app.UseAuthorization();
 
-app.UseDeveloperExceptionPage();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 
@@ -35,6 +49,9 @@ static void RegisterServices(IServiceCollection services)
     services.AddScoped<IRestaurantService, RestaurantService>();
     services.AddDbContext<RestaurantDbContext>();
     services.AddScoped<RestaurantsSeeder>();
+    services.AddScoped<ErrorHandlingMiddleware>();
+    services.AddScoped<ExecutionTimeMiddleware>();
+    services.AddSwaggerGen();
 }
 
 static void SeedDatabase(WebApplication app)

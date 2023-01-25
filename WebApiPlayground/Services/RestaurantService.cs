@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApiPlayground.Entities;
+using WebApiPlayground.Exceptions;
 
 namespace WebApiPlayground.Services
 {
@@ -18,17 +19,15 @@ namespace WebApiPlayground.Services
             _context.SaveChanges();
         }
 
-        public bool Delete(int id)
+        public void Delete(int id)
         {
             var restaurant = _context.Restaurants
                 .FirstOrDefault(x => x.Id == id);
 
-            if (restaurant == null) { return false; }
+            if (restaurant == null) { throw new NotFoundException("Restaurant not found"); }
 
             _context.Restaurants.Remove(restaurant);
             _context.SaveChanges();
-
-            return true;
         }
 
         public List<Restaurant> GetAll()
@@ -48,23 +47,23 @@ namespace WebApiPlayground.Services
                 .Include(x => x.Dishes)
                 .FirstOrDefault(x => x.Id == id);
 
+            if (restaurant == null) { throw new NotFoundException("Restaurant not found"); }
+
             return restaurant;
         }
 
-        public bool Update(int id, Restaurant restaurant)
+        public void Update(int id, Restaurant restaurant)
         {
             var current = _context.Restaurants
                 .FirstOrDefault(x => x.Id == id);
 
-            if (current == null) { return false; }
+            if (restaurant == null) { throw new NotFoundException("Restaurant not found"); }
 
             current.Description = restaurant.Description;
             current.Name = restaurant.Name;
             current.HasDelivery = restaurant.HasDelivery;
 
             _context.SaveChanges();
-
-            return true;
         }
     }
 }
