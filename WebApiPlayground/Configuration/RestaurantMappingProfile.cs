@@ -15,6 +15,8 @@ namespace WebApiPlayground.Configuration
 
             CreateMap<Dish, DishDto>();
 
+            CreateMap<CreateDishDto, Dish>();
+
             CreateMap<CreateRestaurantDto, Restaurant>()
                 .ForMember(x => x.Address, x => x.MapFrom(y => new Address
                 {
