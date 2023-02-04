@@ -13,11 +13,19 @@ namespace WebApiPlayground.Services
 
         public void Seed()
         {
-            if (_context.Database.CanConnect()
-                && !_context.Restaurants.Any())
+            if (_context.Database.CanConnect())
             {
-                _context.Restaurants.AddRange(GetRestaurants());
-                _context.SaveChanges();
+                if (!_context.Restaurants.Any())
+                {
+                    _context.Restaurants.AddRange(GetRestaurants());
+                    _context.SaveChanges();
+                }
+
+                if (!_context.Roles.Any())
+                {
+                    _context.Roles.AddRange(GetRoles());
+                    _context.SaveChanges();
+                }
             }
         }
 
@@ -72,6 +80,27 @@ namespace WebApiPlayground.Services
             };
 
             return restaurants;
+        }
+
+        private IEnumerable<Role> GetRoles()
+        {
+            var roles = new List<Role>()
+            {
+                new Role
+                {
+                    Name = "User",
+                },
+                new Role
+                {
+                    Name = "Manager",
+                },
+                new Role
+                {
+                    Name = "Admin"
+                }
+            };
+
+            return roles;
         }
     }
 }

@@ -12,6 +12,10 @@ namespace WebApiPlayground.Entities
 
         public DbSet<Restaurant> Restaurants { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
@@ -40,6 +44,14 @@ namespace WebApiPlayground.Entities
             modelBuilder.Entity<Address>()
                 .Property(x => x.Street)
                 .HasMaxLength(50);
+
+            modelBuilder.Entity<User>()
+                .Property(x => x.Email)
+                .IsRequired();
+
+            modelBuilder.Entity<Role>()
+               .Property(x => x.Name)
+               .IsRequired();
         }
     }
 }

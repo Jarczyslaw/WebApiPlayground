@@ -48,6 +48,7 @@ static void RegisterServices(IServiceCollection services)
 
     services.AddScoped<IRestaurantService, RestaurantService>();
     services.AddScoped<IDishService, DishService>();
+    services.AddScoped<IAccountService, AccountService>();
 
     services.AddDbContext<RestaurantDbContext>();
     services.AddScoped<RestaurantsSeeder>();
