@@ -1,7 +1,14 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
+using System.Text;
+using WebApiPlayground.Configuration;
 using WebApiPlayground.Entities;
 using WebApiPlayground.Middleware;
 using WebApiPlayground.Models.Dtos;
+using WebApiPlayground.Models.Validators;
 using WebApiPlayground.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,9 +16,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
 builder.WebHost.UseNLog();
 
-RegisterServices(builder.Services);
+var authenticationSettings = new AuthenticationSettings();
+builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+
+RegisterServices(builder.Services, authenticationSettings);
 
 var app = builder.Build();
 
@@ -26,6 +37,7 @@ app.UseCors(x => x
 app.UseMiddleware<ErrorHandlingMiddleware>()
     .UseMiddleware<ExecutionTimeMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
@@ -38,17 +50,39 @@ app.MapControllers();
 
 app.Run();
 
-static void RegisterServices(IServiceCollection services)
+static void RegisterServices(IServiceCollection services, AuthenticationSettings authenticationSettings)
 {
+    services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme
+            = x.DefaultScheme
+            = x.DefaultChallengeScheme = "Bearer";
+    }).AddJwtBearer(x =>
+    {
+        x.SaveToken = true;
+        x.RequireHttpsMetadata = false;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = authenticationSettings.JwtIssuer,
+            ValidAudience = authenticationSettings.JwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
+        };
+    });
+
     services.AddAutoMapper(typeof(RestaurantDto).Assembly);
 
     services.AddSingleton<IWeatherForecastService, WeatherForecastService>();
+    services.AddSingleton(authenticationSettings);
     //services.AddScoped<IWeatherForecastService, WeatherForecastService>(); - one service instance per request
     //services.AddTransient<IWeatherForecastService, WeatherForecastService>(); - one instance per every injection
 
     services.AddScoped<IRestaurantService, RestaurantService>();
     services.AddScoped<IDishService, DishService>();
     services.AddScoped<IAccountService, AccountService>();
+
+    services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+    services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 
     services.AddDbContext<RestaurantDbContext>();
     services.AddScoped<RestaurantsSeeder>();

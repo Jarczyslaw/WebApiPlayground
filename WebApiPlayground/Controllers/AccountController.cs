@@ -23,6 +23,13 @@ namespace WebApiPlayground.Controllers
             _service = service;
         }
 
+        [HttpPost("login")]
+        public ActionResult Login([FromBody] LoginDto dto)
+        {
+            string token = _service.GenerateJwt(dto);
+            return new OkObjectResult(token);
+        }
+
         [HttpPost("register")]
         public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
