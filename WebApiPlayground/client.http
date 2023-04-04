@@ -1,0 +1,25 @@
+﻿@baseUrl = http://localhost:5208/api
+@token = token
+
+GET {{baseUrl}}/restaurant
+
+###
+GET {{baseUrl}}/restaurant/1
+
+###
+POST {{baseUrl}}/account/login
+content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "password"
+}
+
+###
+POST {{baseUrl}}/restaurant
+content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "fakeRestaurant"
+}

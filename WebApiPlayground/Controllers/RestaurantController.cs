@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApiPlayground.Entities;
 using WebApiPlayground.Models.Dtos;
@@ -44,6 +45,7 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<RestaurantDto>> GetAll()
         {
             var restaurants = _service.GetAll();
@@ -54,6 +56,7 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<RestaurantDto> GetById(int id)
         {
             var restaurant = _service.GetById(id);
