@@ -6,12 +6,12 @@ namespace WebApiPlayground.Services
     {
         void AddRestaurant(Restaurant restaurant);
 
-        void Delete(int id);
+        Task Delete(int id);
 
         List<Restaurant> GetAll();
 
         Restaurant GetById(int id);
 
-        void Update(int id, Restaurant restaurant);
+        Task Update(int id, Restaurant restaurant);
     }
 }

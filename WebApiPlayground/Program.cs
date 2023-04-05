@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
@@ -88,7 +89,17 @@ static void RegisterServices(IServiceCollection services, AuthenticationSettings
     services.AddScoped<RestaurantsSeeder>();
     services.AddScoped<ErrorHandlingMiddleware>();
     services.AddScoped<ExecutionTimeMiddleware>();
+    services.AddScoped<IUserContextService, UserContextService>();
+    services.AddHttpContextAccessor();
     services.AddSwaggerGen();
+
+    services.AddAuthorization(x =>
+    {
+        x.AddPolicy("HasNationality", y => y.RequireClaim("Nationality", "Polish"));
+        x.AddPolicy("AtLeast20", y => y.AddRequirements(new MinimumAgeRequirement(20)));
+    });
+    services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+    services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
 }
 
 static void SeedDatabase(WebApplication app)

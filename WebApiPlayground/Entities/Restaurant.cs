@@ -12,6 +12,10 @@
 
         public string ContactNumber { get; set; }
 
+        public virtual User CreatedUser { get; set; }
+
+        public int? CreatedUserId { get; set; }
+
         public string Description { get; set; }
 
         public virtual List<Dish> Dishes { get; set; }
