@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using WebApiPlayground.Configuration;
+using WebApiPlayground.Configuration.Authentication.Requirements;
 using WebApiPlayground.Entities;
 using WebApiPlayground.Exceptions;
 

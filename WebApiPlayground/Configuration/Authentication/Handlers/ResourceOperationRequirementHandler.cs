@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using WebApiPlayground.Configuration.Authentication.Requirements;
 using WebApiPlayground.Entities;
 
-namespace WebApiPlayground.Configuration
+namespace WebApiPlayground.Configuration.Authentication.Handlers
 {
     public class ResourceOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement, Restaurant>
     {

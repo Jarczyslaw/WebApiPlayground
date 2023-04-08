@@ -1,4 +1,4 @@
-﻿namespace WebApiPlayground.Configuration
+﻿namespace WebApiPlayground.Configuration.Authentication
 {
     public class AuthenticationSettings
     {

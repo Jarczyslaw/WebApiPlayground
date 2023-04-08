@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebApiPlayground.Configuration;
+using WebApiPlayground.Configuration.Authentication;
 using WebApiPlayground.Entities;
 using WebApiPlayground.Exceptions;
 using WebApiPlayground.Models.Dtos;

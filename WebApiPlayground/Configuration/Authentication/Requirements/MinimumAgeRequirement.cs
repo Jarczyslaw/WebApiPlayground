@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WebApiPlayground.Configuration
+namespace WebApiPlayground.Configuration.Authentication.Requirements
 {
     public class MinimumAgeRequirement : IAuthorizationRequirement
     {
