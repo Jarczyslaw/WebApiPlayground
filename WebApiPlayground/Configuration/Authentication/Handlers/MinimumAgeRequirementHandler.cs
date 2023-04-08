@@ -15,12 +15,12 @@ namespace WebApiPlayground.Configuration.Authentication.Handlers
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
         {
-            var dateOfBirth = DateTime.Parse(context.User.FindFirst(x => x.Type == "DateOfBirth").Value);
-            var email = context.User.FindFirst(x => x.Type == ClaimTypes.Email).Value;
+            var dateOfBirth = DateTime.Parse(context.User.FindFirstValue("DateOfBirth"));
+            var name = context.User.FindFirstValue(ClaimTypes.Name);
 
             if (dateOfBirth.AddYears(requirement.MinimumAge) < DateTime.Today)
             {
-                _logger.LogInformation($"Authorization succeded for user with email: {email}");
+                _logger.LogInformation($"Authorization succeded for user with email: {name}");
                 context.Succeed(requirement);
             }
 
