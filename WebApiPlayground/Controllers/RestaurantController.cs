@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApiPlayground.Entities;
@@ -10,7 +9,6 @@ namespace WebApiPlayground.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RestaurantController : ControllerBase
     {
         private readonly ILogger<RestaurantController> _logger;
@@ -28,7 +26,6 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Manager")]
         public ActionResult Create([FromBody] CreateRestaurantDto dto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -40,7 +37,6 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AtLeast20")]
         public ActionResult Delete(int id)
         {
             _service.Delete(id);
@@ -50,7 +46,6 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public ActionResult<IEnumerable<RestaurantDto>> GetAll()
         {
             var restaurants = _service.GetAll();
@@ -61,7 +56,6 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "HasNationality")]
         public ActionResult<RestaurantDto> GetById(int id)
         {
             var restaurant = _service.GetById(id);
