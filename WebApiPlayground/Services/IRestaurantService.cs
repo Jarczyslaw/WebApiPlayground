@@ -1,4 +1,6 @@
 ﻿using WebApiPlayground.Entities;
+using WebApiPlayground.Models;
+using WebApiPlayground.Models.Dtos;
 
 namespace WebApiPlayground.Services
 {
@@ -8,7 +10,7 @@ namespace WebApiPlayground.Services
 
         void Delete(int id);
 
-        List<Restaurant> GetAll();
+        PageResult<RestaurantDto> GetAll(RestaurantQuery query);
 
         Restaurant GetById(int id);
 

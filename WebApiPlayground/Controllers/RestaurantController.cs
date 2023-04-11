@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApiPlayground.Entities;
+using WebApiPlayground.Models;
 using WebApiPlayground.Models.Dtos;
 using WebApiPlayground.Services;
 
@@ -46,11 +47,9 @@ namespace WebApiPlayground.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<RestaurantDto>> GetAll()
+        public ActionResult<PageResult<RestaurantDto>> GetAll([FromQuery] RestaurantQuery query)
         {
-            var restaurants = _service.GetAll();
-
-            var result = _mapper.Map<List<RestaurantDto>>(restaurants);
+            var result = _service.GetAll(query);
 
             return new OkObjectResult(result);
         }

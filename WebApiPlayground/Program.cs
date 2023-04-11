@@ -10,6 +10,7 @@ using WebApiPlayground.Configuration.Authentication.Handlers;
 using WebApiPlayground.Configuration.Authentication.Requirements;
 using WebApiPlayground.Entities;
 using WebApiPlayground.Middleware;
+using WebApiPlayground.Models;
 using WebApiPlayground.Models.Dtos;
 using WebApiPlayground.Models.Validators;
 using WebApiPlayground.Services;
@@ -86,6 +87,7 @@ static void RegisterServices(IServiceCollection services, AuthenticationSettings
     services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
     services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+    services.AddScoped<IValidator<RestaurantQuery>, RestaurantQueryValidator>();
 
     services.AddDbContext<RestaurantDbContext>();
     services.AddScoped<RestaurantsSeeder>();
