@@ -23,3 +23,7 @@ Authorization: Bearer {{token}}
 {
     "name": "fakeRestaurant"
 }
+
+
+###
+GET {{baseUrl}}/test.txt

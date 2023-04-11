@@ -32,6 +32,8 @@ var app = builder.Build();
 
 SeedDatabase(app);
 
+app.UseResponseCaching();
+
 // Configure the HTTP request pipeline.
 app.UseCors(x => x
     .AllowAnyOrigin()
@@ -43,6 +45,7 @@ app.UseMiddleware<ErrorHandlingMiddleware>()
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
 {
