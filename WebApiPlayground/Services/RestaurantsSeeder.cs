@@ -1,4 +1,5 @@
-﻿using WebApiPlayground.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApiPlayground.Entities;
 
 namespace WebApiPlayground.Services
 {
@@ -15,6 +16,12 @@ namespace WebApiPlayground.Services
         {
             if (_context.Database.CanConnect())
             {
+                var pendingMigrations = _context.Database.GetPendingMigrations();
+                if (pendingMigrations.Any())
+                {
+                    _context.Database.Migrate();
+                }
+
                 if (!_context.Restaurants.Any())
                 {
                     _context.Restaurants.AddRange(GetRestaurants());

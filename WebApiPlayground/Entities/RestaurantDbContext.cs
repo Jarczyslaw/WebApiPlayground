@@ -4,7 +4,9 @@ namespace WebApiPlayground.Entities
 {
     public class RestaurantDbContext : DbContext
     {
-        private readonly string _connectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=Restaurants;Integrated Security=true";
+        public RestaurantDbContext(DbContextOptions<RestaurantDbContext> dbContextOptions) : base(dbContextOptions)
+        {
+        }
 
         public DbSet<Address> Addresses { get; set; }
 
@@ -15,11 +17,6 @@ namespace WebApiPlayground.Entities
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

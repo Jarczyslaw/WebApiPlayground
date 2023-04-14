@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using System.Text;
@@ -26,7 +27,7 @@ builder.WebHost.UseNLog();
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
-RegisterServices(builder.Services, authenticationSettings);
+RegisterServices(builder.Services, builder.Configuration, authenticationSettings);
 
 var app = builder.Build();
 
@@ -47,17 +48,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 
 app.Run();
 
-static void RegisterServices(IServiceCollection services, AuthenticationSettings authenticationSettings)
+static void RegisterServices(
+    IServiceCollection services,
+    ConfigurationManager configuration,
+    AuthenticationSettings authenticationSettings)
 {
     services.AddAuthentication(x =>
     {
@@ -92,7 +93,8 @@ static void RegisterServices(IServiceCollection services, AuthenticationSettings
     services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
     services.AddScoped<IValidator<RestaurantQuery>, RestaurantQueryValidator>();
 
-    services.AddDbContext<RestaurantDbContext>();
+    services.AddDbContext<RestaurantDbContext>(
+        x => x.UseSqlServer(configuration.GetConnectionString("RestaurantDbConnection")));
     services.AddScoped<RestaurantsSeeder>();
     services.AddScoped<ErrorHandlingMiddleware>();
     services.AddScoped<ExecutionTimeMiddleware>();
